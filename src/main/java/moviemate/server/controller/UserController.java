@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller class is where all the user requests are handled and
@@ -15,7 +17,7 @@ import java.util.List;
  * responses are sent
  */
 @RestController
-@RequestMapping("/user/v1")
+@RequestMapping("api/v1/users")
 @RequiredArgsConstructor
 @Validated
 public class UserController {
@@ -23,8 +25,8 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * This method is called when a GET request is made
-     * URL: localhost:8080/user/v1/
+     * Get all users
+     * URL: localhost:8080/v1/users/
      * Purpose: Fetches all the users in the user table
      * 
      * @return List of Users
@@ -35,8 +37,8 @@ public class UserController {
     }
 
     /**
-     * This method is called when a GET request is made
-     * URL: localhost:8080/user/v1/1 (or any other id)
+     * Get User by id
+     * URL: localhost:8080/v1/users/{id}
      * Purpose: Fetches user with the given id
      * 
      * @param id - user id
@@ -48,34 +50,52 @@ public class UserController {
     }
 
     /**
-     * This method is called when a POST request is made
-     * URL: localhost:8080/user/v1/
+     * Create/Register new user
+     * URL: localhost:8080/v1/users/register
      * Purpose: Save a User entity
      * 
      * @param user - Request body is a User entity
      * @return Saved User entity
      */
-    @PostMapping("/")
+    @PostMapping("/register")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
     /**
+     * This method is called when a POST request is made
+     * URL: localhost:8080/v1/users/lgin
+     * Purpose: Login a User entity
+     * 
+     * @param user - Request body is a User entity
+     * @return Saved User entity
+     */
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
+        String token = userService.loginUser(user);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * This method is called when a PUT request is made
-     * URL: localhost:8080/user/v1/
+     * URL: localhost:8080/v1/users/{id}/profile
      * Purpose: Update a User entity
      * 
      * @param user - User entity to be updated
      * @return Updated User
      */
-    @PutMapping("/")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        return ResponseEntity.ok().body(userService.updateUser(user));
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
+        return ResponseEntity.ok().body(userService.updateUser(user, id));
     }
 
     /**
      * This method is called when a DELETE request is made
-     * URL: localhost:8080/user/v1/1 (or any other id)
+     * URL: localhost:8080/v1/users/1 (or any other id)
      * Purpose: Delete a User entity
      * 
      * @param id - user's id to be deleted
