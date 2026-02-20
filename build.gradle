@@ -6,7 +6,7 @@ plugins {
 
 group = 'moviemate'
 version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+description = 'MovieMate Backend Migration to Spring Boot'
 
 java {
 	toolchain {
@@ -19,27 +19,37 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-	// implementation 'org.postgresql:postgresql'
-
+	// Actuator
  	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// JPA + Database
  	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Web
  	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Flyway
  	implementation 'org.flywaydb:flyway-core'
- 	compileOnly 'org.projectlombok:lombok'
+ 	
 	// postgresql
  	runtimeOnly 'org.postgresql:postgresql'
 
+	// JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // for JSON serialization
 
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Lombok
  	annotationProcessor 'org.projectlombok:lombok'
- 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// For hot reload
+	compileOnly 'org.projectlombok:lombok'
+
+	// // Devtools : For hot reload
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
-	
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+
+ 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

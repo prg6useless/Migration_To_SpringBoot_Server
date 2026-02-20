@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 /**
  * Service layer is where all the business logic lies
  */
@@ -29,6 +31,8 @@ public class UserService {
     private RoleRepository roleRepository;
     @Autowired
     private HashUtil hashUtil;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -44,6 +48,7 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword())); // hash
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         Role userRole = roleRepository.findByName("USER")
@@ -60,7 +65,7 @@ public class UserService {
         User existingUser = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User not found with email: " + user.getEmail()));
 
-        if (!existingUser.getPassword().equals(user.getPassword())) {
+        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
             throw new RuntimeException("Invalid password"); // can also create a custom InvalidCredentialsException
         }
 
