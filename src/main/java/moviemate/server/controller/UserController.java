@@ -1,10 +1,14 @@
 package moviemate.server.controller;
 
+import moviemate.server.dto.request.ChangePasswordRequest;
+import moviemate.server.dto.request.LoginRequest;
+import moviemate.server.dto.request.ResetPasswordRequest;
 import moviemate.server.model.User;
 import moviemate.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,7 +77,7 @@ public class UserController {
      * @return Saved User entity
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginRequest user) {
         String token = userService.loginUser(user);
 
         Map<String, String> response = new HashMap<>();
@@ -107,5 +111,27 @@ public class UserController {
     public ResponseEntity<String> deleteUserById(@PathVariable Integer id) {
         userService.deleteUserById(id);
         return ResponseEntity.ok().body("Deleted user successfully");
+    }
+
+    @PatchMapping("/reset-password")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> resetPasswordByAdmin(@RequestBody ResetPasswordRequest request) {
+        userService.resetPasswordByAdmin(request);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("msg", "Password reset successfully");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/change-password")
+        public Map<String, String> changePassword(
+            Authentication authentication,
+            @RequestBody ChangePasswordRequest request) {
+
+        String email = authentication.getName();  
+        userService.changePassword(email, request); 
+
+        return Map.of("message", "Password changed successfully");
     }
 }

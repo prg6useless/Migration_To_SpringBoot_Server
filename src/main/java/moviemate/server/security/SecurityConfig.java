@@ -41,6 +41,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/**")
                         .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                         .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/auth/welcome", true) // Redirect after login
+                )
                 .addFilterBefore(jwtAuthenticationFilter,
                         org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 

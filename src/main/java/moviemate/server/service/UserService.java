@@ -1,6 +1,9 @@
 package moviemate.server.service;
 
 import moviemate.server.model.User;
+import moviemate.server.dto.request.ChangePasswordRequest;
+import moviemate.server.dto.request.LoginRequest;
+import moviemate.server.dto.request.ResetPasswordRequest;
 import moviemate.server.exception.UserNotFoundException;
 import moviemate.server.model.Role;
 import moviemate.server.repository.UserRepository;
@@ -51,7 +54,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // hash
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-        Role userRole = roleRepository.findByName("USER")
+        Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Role USER not found"));
         user.setRoles(List.of(userRole));
 
@@ -61,12 +64,16 @@ public class UserService {
         return savedUser;
     }
 
-    public String loginUser(User user) {
-        User existingUser = userRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + user.getEmail()));
+    public String loginUser(LoginRequest request) {
+        User existingUser = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
 
-        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), existingUser.getPassword())) {
             throw new RuntimeException("Invalid password"); // can also create a custom InvalidCredentialsException
+        }
+
+        if (!existingUser.getIsActive()) {
+            throw new RuntimeException("User account is inactive");
         }
 
         return hashUtil.generateToken(existingUser);
@@ -98,5 +105,26 @@ public class UserService {
 
     public void deleteUserById(Integer id) {
         userRepository.deleteById(id);
+    }
+
+    public User resetPasswordByAdmin(ResetPasswordRequest request) {
+        User existingUser = userRepository.findById(request.getId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + request.getId()));
+        String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+        existingUser.setPassword(encodedPassword);
+        return userRepository.save(existingUser);
+    }
+
+    // TO DO : need to work on this
+    public void changePassword(String email, ChangePasswordRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Old password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 }

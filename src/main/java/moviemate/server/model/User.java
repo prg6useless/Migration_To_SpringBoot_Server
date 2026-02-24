@@ -32,8 +32,7 @@ public class User {
     private String otp;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    // One-to-Many relationship with Role
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
         joinColumns = @JoinColumn(name = "user_id"),
