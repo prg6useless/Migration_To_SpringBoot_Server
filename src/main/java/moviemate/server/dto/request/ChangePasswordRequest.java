@@ -1,5 +1,7 @@
 package moviemate.server.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class ChangePasswordRequest {
+    @JsonProperty("oldPassword")
     private String oldPassword;
+    @JsonProperty("newPassword")
     private String newPassword;
 }

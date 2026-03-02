@@ -2,6 +2,7 @@ package moviemate.server.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 
@@ -37,10 +38,10 @@ public class HashUtil {
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .claim("userId", user.getId())
-                .claim("roles", user.getRoles()) // optional
+                .claim("roles", user.getRoles().stream().map(role -> role.getName()).toList()) // optional
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key)
+                .signWith(key,SignatureAlgorithm.HS256)
                 .compact();
     }
 
