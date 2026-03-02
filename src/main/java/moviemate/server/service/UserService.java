@@ -39,7 +39,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ─── Helper: map User → UserResponse ──────────────────────────────────────
+    // Map User → UserResponse 
     private UserResponse toUserResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
