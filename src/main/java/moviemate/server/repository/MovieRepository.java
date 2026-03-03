@@ -10,7 +10,6 @@ import moviemate.server.model.Movie;
 public interface MovieRepository extends JpaRepository<Movie, Integer> {
     Optional<Movie> findBySlug(String slug);
 
-    // Check if it exists by slug
     boolean existsBySlug(String slug);
 
     // Delete by slug (Must be @Transactional for delete operations)

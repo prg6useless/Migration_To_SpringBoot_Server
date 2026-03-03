@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -40,7 +41,7 @@ public class Movie {
     private Integer seats = 0;
 
     @Column(nullable = false)
-    private Integer price;
+    private BigDecimal price;
 
     @Column(name = "release_date", nullable = false)
     private LocalDateTime releaseDate;
@@ -64,7 +65,7 @@ public class Movie {
     @JoinColumn(name = "updated_by")
     private User updatedBy;
 
-    // 🔥 Auto Timestamp Handling
+    // Auto Timestamp Handling
 
     @PrePersist
     protected void onCreate() {

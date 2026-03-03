@@ -36,7 +36,6 @@ public class MovieService {
                 .price(movie.getPrice())
                 .releaseDate(movie.getReleaseDate())
                 .endDate(movie.getEndDate())
-                // Check for null to avoid NullPointerException
                 .createdBy(movie.getCreatedBy() != null ? movie.getCreatedBy().getId() : null)
                 .updatedBy(movie.getUpdatedBy() != null ? movie.getUpdatedBy().getId() : null)
                 .build();

@@ -1,5 +1,6 @@
 package moviemate.server.dto.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.Builder;
@@ -16,7 +17,7 @@ public class MovieResponse {
     String poster;
     Integer rating;
     Integer seats;
-    Integer price;
+    BigDecimal price;
     LocalDateTime releaseDate;
     LocalDateTime endDate;
     Integer createdBy;

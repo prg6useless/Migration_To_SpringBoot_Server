@@ -22,7 +22,6 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    // TO DO : testing remaining in postman
     @PostMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MessageResponse> saveMpvie(@RequestBody Movie movie) {

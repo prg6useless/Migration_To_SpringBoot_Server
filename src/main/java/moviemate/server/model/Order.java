@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,10 +57,30 @@ public class Order {
     private LocalDateTime updatedAt;
 
     public enum OrderType {
-        ONLINE, CASH_ON_DELIVERY
+        @JsonProperty("Cash On Delivery")
+        CASH_ON_DELIVERY,
+        @JsonProperty("Online")
+        ONLINE;
+
+        @JsonCreator
+        public static OrderType fromValue(String value) {
+            return OrderType.valueOf(value.toUpperCase().replace(" ", "_"));
+        }
     }
 
     public enum OrderStatus {
-        PENDING, COMPLETED, FAILED, CANCELLED
+        @JsonProperty("pending")
+        PENDING,
+        @JsonProperty("completed")
+        COMPLETED,
+        @JsonProperty("failed")
+        FAILED,
+        @JsonProperty("cancelled")
+        CANCELLED;
+
+        @JsonCreator
+        public static OrderStatus fromValue(String value) {
+            return OrderStatus.valueOf(value.toUpperCase());
+        }
     }
 }
